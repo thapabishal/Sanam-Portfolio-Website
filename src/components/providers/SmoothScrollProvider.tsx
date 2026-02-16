@@ -1,3 +1,4 @@
+// SmoothScrollProvider.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -12,7 +13,12 @@ export function SmoothScrollProvider({
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Initialize Lenis with Jesko-style smoothness
+    // CRITICAL: Disable Lenis on mobile (touch devices)
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+    if (isTouchDevice) {
+      return; // Don't initialize Lenis on mobile
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -23,22 +29,12 @@ export function SmoothScrollProvider({
     });
 
     lenisRef.current = lenis;
-
-    // Connect Lenis to GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
-
-    // Use GSAP ticker for smooth animation frame loop
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
-    // Disable GSAP's default lag smoothing for tighter sync
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    // Cleanup
     return () => {
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
     };
   }, []);
 

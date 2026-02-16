@@ -43,11 +43,10 @@ const navItems: NavItem[] = [
   { id: 'contact', label: 'Connect', icon: Mail },
 ];
 
-export function PillNav({ currentTheme, onThemeChange, isScrolled }: PillNavProps) {
+export function PillNav({ currentTheme, onThemeChange }: PillNavProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Section tracking with IntersectionObserver
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -73,7 +72,7 @@ export function PillNav({ currentTheme, onThemeChange, isScrolled }: PillNavProp
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
+      setIsMenuOpen(false);
     }
   };
 
@@ -83,22 +82,15 @@ export function PillNav({ currentTheme, onThemeChange, isScrolled }: PillNavProp
     ? 'bg-[#FAF7F4]/98 border-[#C9A87C]/30 text-[#2C2416]'
     : 'bg-[#1A1512]/98 border-[#D7A86E]/30 text-[#F5F5F5]';
 
-  const menuClass = isBeauty
-    ? 'bg-[#FAF7F4] border-[#C9A87C]/20'
-    : 'bg-[#1A1512] border-[#D7A86E]/20';
-
   const ActiveIcon = navItems[activeIndex]?.icon || Home;
 
   return (
     <>
-      {/* Desktop Navigation */}
-      <div
-        className={cn(
-          'hidden md:flex items-center gap-1 px-2 py-2 rounded-full backdrop-blur-xl border shadow-lg transition-all duration-500',
-          navClass,
-          isScrolled ? 'scale-[0.98]' : 'scale-100'
-        )}
-      >
+      {/* Desktop - Top Navigation (unchanged) */}
+      <div className={cn(
+        'hidden md:flex items-center gap-1 px-2 py-2 rounded-full backdrop-blur-xl border shadow-lg',
+        navClass
+      )}>
         {navItems.map((item) => (
           <button
             key={item.id}
@@ -109,171 +101,129 @@ export function PillNav({ currentTheme, onThemeChange, isScrolled }: PillNavProp
             <span className="hidden lg:inline">{item.label}</span>
           </button>
         ))}
-
         <div className={cn('w-px h-5 mx-2 opacity-30', isBeauty ? 'bg-[#2C2416]' : 'bg-[#F5F5F5]')} />
-
         <button
           onClick={() => onThemeChange(isBeauty ? 'barista' : 'beautician')}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
         >
           {isBeauty ? <Coffee className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
           <span className="hidden lg:inline">{isBeauty ? 'Coffee' : 'Beauty'}</span>
         </button>
       </div>
 
-      {/* Mobile Navigation - Fixed Layout */}
-      <div className="md:hidden flex items-center gap-2">
-        {/* Menu Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className={cn(
-            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border shadow-lg shrink-0',
-            navClass
-          )}
-          aria-label="Toggle menu"
-          type="button"
-        >
-          <AnimatePresence mode="wait">
-            {isMobileMenuOpen ? (
-              <motion.div
-                key="close"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <X className="w-5 h-5" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="menu"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Menu className="w-5 h-5" />
-              </motion.div>
+      {/* MOBILE: Bottom Dock Design */}
+      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div className={cn(
+          'flex items-center gap-2 px-2 py-2 rounded-full backdrop-blur-xl border shadow-2xl',
+          navClass
+        )}>
+          {/* Menu Toggle */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 transition-colors"
+            type="button"
+          >
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+
+          <div className={cn('w-px h-6 opacity-30', isBeauty ? 'bg-[#2C2416]' : 'bg-[#F5F5F5]')} />
+
+          {/* Active Section */}
+          <button
+            onClick={() => scrollToSection(navItems[activeIndex].id)}
+            className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-black/5 transition-colors min-w-[100px]"
+          >
+            <ActiveIcon className="w-4 h-4" />
+            <span className="text-sm font-medium">{navItems[activeIndex]?.label}</span>
+          </button>
+
+          <div className={cn('w-px h-6 opacity-30', isBeauty ? 'bg-[#2C2416]' : 'bg-[#F5F5F5]')} />
+
+          {/* Theme Toggle */}
+          <button
+            onClick={() => onThemeChange(isBeauty ? 'barista' : 'beautician')}
+            className={cn(
+              'flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 transition-colors',
+              isBeauty ? 'text-[#C9A87C]' : 'text-[#D7A86E]'
             )}
-          </AnimatePresence>
-        </button>
-
-        {/* Active Section Display */}
-        <div
-          className={cn(
-            'flex items-center justify-center gap-2 px-4 py-3 rounded-full backdrop-blur-xl border shadow-lg min-w-[120px]',
-            navClass
-          )}
-        >
-          <ActiveIcon className="w-4 h-4 shrink-0" />
-          <span className="text-sm font-medium truncate">
-            {navItems[activeIndex]?.label}
-          </span>
+            type="button"
+          >
+            {isBeauty ? <Sparkles className="w-5 h-5" /> : <Coffee className="w-5 h-5" />}
+          </button>
         </div>
-
-        {/* Theme Toggle */}
-        <button
-          onClick={() => onThemeChange(isBeauty ? 'barista' : 'beautician')}
-          className={cn(
-            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border shadow-lg shrink-0',
-            navClass,
-            isBeauty ? 'text-[#C9A87C]' : 'text-[#D7A86E]'
-          )}
-          aria-label="Toggle theme"
-          type="button"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentTheme}
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.5, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {isBeauty ? <Sparkles className="w-5 h-5" /> : <Coffee className="w-5 h-5" />}
-            </motion.div>
-          </AnimatePresence>
-        </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu - Bottom Sheet */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {isMenuOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm md:hidden z-40"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => setIsMenuOpen(false)}
             />
             <motion.div
-              initial={{ y: -30, opacity: 0, scale: 0.95 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: -30, opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className={cn(
-                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border mx-auto max-w-sm',
-                menuClass
+                'md:hidden fixed bottom-0 left-0 right-0 rounded-t-3xl p-6 z-50 shadow-2xl border-t',
+                isBeauty ? 'bg-[#FAF7F4] border-[#C9A87C]/20' : 'bg-[#1A1512] border-[#D7A86E]/20'
               )}
             >
-              <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
+              <div className="flex justify-center mb-4">
+                <div className={cn('w-12 h-1 rounded-full', isBeauty ? 'bg-[#C9A87C]/30' : 'bg-[#D7A86E]/30')} />
+              </div>
+              <nav className="grid grid-cols-2 gap-2">
                 {navItems.map((item, index) => (
-                  <motion.button
+                  <button
                     key={item.id}
-                    type="button"
                     onClick={() => scrollToSection(item.id)}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
                     className={cn(
-                      'flex items-center gap-4 p-4 rounded-2xl text-left transition-all duration-300',
+                      'flex items-center gap-3 p-4 rounded-2xl text-left transition-all',
                       navClass,
-                      activeIndex === index ? 'opacity-100' : 'opacity-70 hover:opacity-100'
+                      activeIndex === index 
+                        ? (isBeauty ? 'bg-[#C9A87C]/20' : 'bg-[#D7A86E]/20')
+                        : 'opacity-70 hover:opacity-100'
                     )}
                   >
-                    <div className={cn('p-2 rounded-full', isBeauty ? 'bg-[#C9A87C]/20' : 'bg-[#D7A86E]/20')}>
-                      <item.icon className="w-4 h-4" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-lg font-medium">{item.label}</span>
-                    </div>
-                  </motion.button>
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.label}</span>
+                  </button>
                 ))}
-
-                <div className={cn('h-px my-3 opacity-20', isBeauty ? 'bg-[#2C2416]' : 'bg-[#F5F5F5]')} />
-
-                <div className="px-1">
-                  <p className={cn('text-xs uppercase tracking-wider mb-3 font-bold opacity-60', navClass)}>
-                    View Mode
-                  </p>
-                  <div className={cn('flex items-center rounded-full p-1 gap-1 border', isBeauty ? 'bg-[#EDE5DE] border-[#C9A87C]/30' : 'bg-[#2C2416] border-[#D7A86E]/30')}>
-                    <button
-                      type="button"
-                      onClick={() => onThemeChange('beautician')}
-                      className={cn(
-                        'flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all flex-1',
-                        isBeauty ? 'bg-[#C9A87C] text-white' : 'text-[#2C2416]/60'
-                      )}
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Beauty
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onThemeChange('barista')}
-                      className={cn(
-                        'flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all flex-1',
-                        !isBeauty ? 'bg-[#D7A86E] text-[#1A1512]' : 'text-[#F5F5F5]/60'
-                      )}
-                    >
-                      <Coffee className="w-3.5 h-3.5" />
-                      Coffee
-                    </button>
-                  </div>
-                </div>
               </nav>
+              <div className="mt-4 pt-4 border-t border-opacity-20">
+                <p className={cn('text-xs uppercase tracking-wider mb-2 opacity-60', navClass)}>View Mode</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onThemeChange('beautician')}
+                    className={cn(
+                      'flex-1 flex items-center justify-center gap-2 p-3 rounded-xl text-sm font-semibold transition-all',
+                      isBeauty 
+                        ? 'bg-[#C9A87C] text-white' 
+                        : 'bg-black/5 opacity-60'
+                    )}
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Beauty
+                  </button>
+                  <button
+                    onClick={() => onThemeChange('barista')}
+                    className={cn(
+                      'flex-1 flex items-center justify-center gap-2 p-3 rounded-xl text-sm font-semibold transition-all',
+                      !isBeauty 
+                        ? 'bg-[#D7A86E] text-[#1A1512]' 
+                        : 'bg-black/5 opacity-60'
+                    )}
+                  >
+                    <Coffee className="w-4 h-4" />
+                    Coffee
+                  </button>
+                </div>
+              </div>
             </motion.div>
           </>
         )}
