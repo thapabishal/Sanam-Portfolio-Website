@@ -1,4 +1,4 @@
-// Navigation.tsx - MINIMAL FIX: Only changed justify-start to justify-center
+// Navigation.tsx - Fixed positioning
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -32,11 +32,9 @@ export default function Navigation() {
   if (!isMounted || !isReady) {
     return (
       <header className="fixed top-0 left-0 right-0 z-50 py-4 pointer-events-none">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* MINIMAL FIX: justify-center instead of justify-start */}
-          <div className="flex justify-center md:justify-center">
-            <div className="h-12 w-full md:w-[700px] rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm" />
-          </div>
+        {/* CRITICAL FIX: Removed max-w-7xl container, use full width with centering */}
+        <div className="w-full px-4 flex justify-center">
+          <div className="h-12 w-full max-w-[320px] md:w-[700px] rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm" />
         </div>
       </header>
     );
@@ -48,15 +46,13 @@ export default function Navigation() {
         isScrolled ? 'py-2' : 'py-4'
       }`}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* MINIMAL FIX: justify-center instead of justify-start */}
-        <div className="flex justify-center md:justify-center">
-          <PillNav 
-            currentTheme={theme} 
-            onThemeChange={handleThemeChange} 
-            isScrolled={isScrolled}
-          />
-        </div>
+      {/* CRITICAL FIX: Simplified container - full width with centering, no max-w-7xl */}
+      <div className="w-full px-4 flex justify-center">
+        <PillNav 
+          currentTheme={theme} 
+          onThemeChange={handleThemeChange} 
+          isScrolled={isScrolled}
+        />
       </div>
     </header>
   );
