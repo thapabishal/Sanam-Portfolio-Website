@@ -22,10 +22,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: false,
         message: 'Validation failed',
-        errors: validationResult.error.errors.map((err) => ({
-          field: err.path.join('.'),
-          message: err.message,
+        errors: validationResult.error.issues.map((issue) => ({
+        field: issue.path.join('.'),
+        message: issue.message,
         })),
+        
       }, { status: 400 });
     }
 
