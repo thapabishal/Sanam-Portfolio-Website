@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import Head from 'next/head';
 import { Metadata } from '@/lib/seo/metadata';
 
 interface SeoHeadProps {
@@ -7,11 +7,14 @@ interface SeoHeadProps {
 }
 
 /**
- * Renders document head elements using react-helmet-async.
+ * Renders document head elements using next/head.
  * Accepts Next.js Metadata object structure for compatibility.
  * 
  * Usage:
  * <SeoHead metadata={constructMetadata({ title: "Page Title" })} />
+ * 
+ * Note: next/head is not fully supported in App Router. 
+ * Ideally, migrating to the Metadata API (export const metadata = ...) is recommended.
  */
 export const SeoHead: React.FC<SeoHeadProps> = ({ metadata }) => {
     const title = typeof metadata.title === 'string' ? metadata.title : metadata.title?.default;
@@ -24,7 +27,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({ metadata }) => {
     const ogImages = metadata.openGraph?.images || [];
 
     return (
-        <Helmet>
+        <Head>
             {/* Basic Metadata */}
             {title && <title>{title}</title>}
             {description && <meta name="description" content={description} />}
@@ -60,6 +63,6 @@ export const SeoHead: React.FC<SeoHeadProps> = ({ metadata }) => {
                     content={`${metadata.robots.index === false ? 'noindex' : 'index'}, ${metadata.robots.follow === false ? 'nofollow' : 'follow'}`}
                 />
             )}
-        </Helmet>
+        </Head>
     );
 };
