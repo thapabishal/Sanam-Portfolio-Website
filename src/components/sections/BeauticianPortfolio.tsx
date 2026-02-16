@@ -181,7 +181,7 @@ const PortfolioSkeleton = () => (
         <div className="mt-2 h-4 w-1/2 bg-card rounded shimmer-bg" />
       </div>
     ))}
-    <style jsx>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       .shimmer-bg {
         background: linear-gradient(90deg, var(--bg-elevated) 0%, var(--bg-card) 50%, var(--bg-elevated) 100%);
         background-size: 200% 100%;
@@ -191,7 +191,7 @@ const PortfolioSkeleton = () => (
         0% { background-position: -200% 0; }
         100% { background-position: 200% 0; }
       }
-    `}</style>
+    `}} />
   </div>
 );
 
@@ -277,7 +277,7 @@ export const BeauticianPortfolio = () => {
     return () => ctx.revert();
   }, [loading]);
 
-  const scroll = (direction: 'left' | 'right') => {
+  const scrollGallery = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const container = scrollContainerRef.current;
     const scrollAmount = container.clientWidth * 0.8;
@@ -384,7 +384,8 @@ export const BeauticianPortfolio = () => {
         <div className="relative group/gallery">
           {/* Navigation Buttons - Theme aware */}
           <button
-            onClick={() => scroll('left')}
+            type="button"
+            onClick={() => scrollGallery('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-bg-elevated/90 backdrop-blur-md border border-border-default rounded-full flex items-center justify-center text-text-primary opacity-0 group-hover/gallery:opacity-100 transition-all duration-300 hover:bg-accent-primary hover:text-bg-page hover:border-accent-primary -translate-x-1/2 lg:-translate-x-6"
             aria-label="Scroll left"
           >
@@ -392,7 +393,8 @@ export const BeauticianPortfolio = () => {
           </button>
           
           <button
-            onClick={() => scroll('right')}
+            type="button"
+            onClick={() => scrollGallery('right')}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-bg-elevated/90 backdrop-blur-md border border-border-default rounded-full flex items-center justify-center text-text-primary opacity-0 group-hover/gallery:opacity-100 transition-all duration-300 hover:bg-accent-primary hover:text-bg-page hover:border-accent-primary translate-x-1/2 lg:translate-x-6"
             aria-label="Scroll right"
           >
@@ -456,7 +458,7 @@ export const BeauticianPortfolio = () => {
                         }}
                       >
                         {/* Image Content */}
-                        {hasSlider ? (
+                        {hasSlider && beforeUrl && afterUrl ? (
                           <BeforeAfterSlider 
                             before={beforeUrl} 
                             after={afterUrl} 

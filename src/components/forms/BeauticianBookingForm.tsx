@@ -230,7 +230,7 @@ export default function BeauticianBookingForm({
           <SelectInput
             label="Service Type"
             placeholder="Select a service"
-            options={SERVICE_OPTIONS}
+            options={[...SERVICE_OPTIONS]}
             theme={theme}
             required
             error={errors.service?.message}
@@ -282,7 +282,7 @@ export default function BeauticianBookingForm({
             <SelectInput
               label="Preferred Time"
               placeholder="Select time slot"
-              options={TIME_OPTIONS}
+              options={[...TIME_OPTIONS]}
               theme={theme}
               required
               error={errors.preferredTime?.message}

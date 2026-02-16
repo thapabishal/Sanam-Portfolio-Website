@@ -5,7 +5,7 @@ export const beauticianBookingSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
   phone: z.string().min(10, 'Phone must be at least 10 digits').regex(/^[\d\s\-\+\(\)]+$/, 'Invalid phone number'),
   service: z.enum(['bridal', 'editorial', 'sfx', 'glam', 'consultation'], {
-    errorMap: () => ({ message: 'Please select a service' }),
+    message: 'Please select a service',
   }),
   preferredDate: z.string().min(1, 'Please select a date').refine((date) => {
     const selected = new Date(date);
@@ -14,7 +14,7 @@ export const beauticianBookingSchema = z.object({
     return selected >= today;
   }, { message: 'Date must be in the future' }),
   preferredTime: z.enum(['morning', 'afternoon', 'evening', 'flexible'], {
-    errorMap: () => ({ message: 'Please select a time' }),
+    message: 'Please select a time',
   }),
   specialRequests: z.string().max(1000).optional(),
   agreeToTerms: z.boolean().refine((val) => val === true, {

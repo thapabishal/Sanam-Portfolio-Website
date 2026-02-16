@@ -207,7 +207,7 @@ export default function TrainingInquiryForm({
           <SelectInput
             label="Training Type"
             placeholder="Select training type"
-            options={TRAINING_TYPE_OPTIONS}
+            options={[...TRAINING_TYPE_OPTIONS]}
             theme={theme}
             required
             error={errors.trainingType?.message}
@@ -243,7 +243,7 @@ export default function TrainingInquiryForm({
             <SelectInput
               label="Training Module (Optional)"
               placeholder="Select a module"
-              options={TRAINING_MODULE_OPTIONS}
+              options={[...TRAINING_MODULE_OPTIONS]}
               theme={theme}
               error={errors.trainingModule?.message}
               helperText="Leave blank if you're not sure"
@@ -296,7 +296,7 @@ export default function TrainingInquiryForm({
           <SelectInput
             label="How Did You Hear About Us? (Optional)"
             placeholder="Select one"
-            options={REFERRAL_SOURCE_OPTIONS}
+            options={[...REFERRAL_SOURCE_OPTIONS]}
             theme={theme}
             error={errors.referralSource?.message}
             {...register('referralSource')}

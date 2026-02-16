@@ -73,3 +73,9 @@ next-env.d.ts
 .idea/
 *.swp
 *.swo
+
+
+
+
+
+package-lock.json

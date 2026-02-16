@@ -154,7 +154,7 @@ export default function ContactForm({ theme = 'neutral', onSuccess }: ContactFor
         <SelectInput
           label="Category (Optional)"
           placeholder="Select a category"
-          options={CONTACT_CATEGORY_OPTIONS}
+          options={[...CONTACT_CATEGORY_OPTIONS]}
           theme={theme}
           error={errors.category?.message}
           helperText="Helps us route your message to the right person"
