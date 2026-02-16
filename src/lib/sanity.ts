@@ -4,7 +4,7 @@ import { createImageUrlBuilder } from '@sanity/image-url'
 // Environment variables (must be set in .env.local and Vercel dashboard)
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || ''
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
-const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01'
+const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2025-02-16'
 
 // Sanity client
 export const client = createClient({
@@ -13,6 +13,7 @@ export const client = createClient({
   apiVersion,
   useCdn: true, // use CDN for faster reads
   perspective: 'published',
+  token: process.env.SANITY_TOKEN, // optional, only if dataset is private
 })
 
 // Image URL builder
