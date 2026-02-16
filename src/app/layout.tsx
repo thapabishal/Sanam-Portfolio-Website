@@ -3,7 +3,7 @@ import { Inter, Playfair_Display, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
-import Navigation from '@/components/shared/Navigation';
+import dynamic from 'next/dynamic';
 import Footer from '@/components/shared/Footer';
 
 const inter = Inter({ 
@@ -24,6 +24,11 @@ const cormorant = Cormorant_Garamond({
   style: ['normal', 'italic'],
   variable: '--font-cormorant',
   display: 'swap',
+});
+
+// CRITICAL FIX: Disable SSR for Navigation to prevent hydration mismatch
+const Navigation = dynamic(() => import('@/components/shared/Navigation'), {
+  ssr: false,
 });
 
 export const metadata: Metadata = {
