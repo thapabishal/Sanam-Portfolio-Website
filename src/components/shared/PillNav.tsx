@@ -280,8 +280,7 @@ export function PillNav({
   );
 
   return (
-    // CRITICAL FIX: No width constraints here - let parent handle centering
-    <div className="relative">
+    <div className="relative inline-block">
       {/* Desktop Navigation */}
       <div
         ref={containerRef}
@@ -340,13 +339,13 @@ export function PillNav({
         <ThemeToggle />
       </div>
 
-      {/* Mobile Navigation - FIXED: Properly constrained and centered */}
-      <div className="md:hidden flex items-center justify-center gap-2">
+      {/* Mobile Navigation - Simple flex, no complex layouts */}
+      <div className="md:hidden flex items-center gap-2">
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className={cn(
-            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shadow-lg shrink-0',
+            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shadow-lg',
             styles.nav,
             styles.text
           )}
@@ -381,19 +380,19 @@ export function PillNav({
         </button>
 
         <div className={cn(
-          'flex items-center justify-center gap-2 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium shadow-lg transition-all duration-300 min-w-[120px]',
+          'flex items-center gap-2 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium shadow-lg transition-all duration-300',
           styles.nav,
           styles.text
         )}>
-          <span className="shrink-0">{navItems[activeIndex]?.icon}</span>
-          <span className="truncate">{navItems[activeIndex]?.label || 'Menu'}</span>
+          <span>{navItems[activeIndex]?.icon}</span>
+          <span>{navItems[activeIndex]?.label || 'Menu'}</span>
         </div>
 
         <button
           type="button"
           onClick={() => onThemeChange(currentTheme === 'barista' ? 'beautician' : 'barista')}
           className={cn(
-            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shadow-lg shrink-0',
+            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shadow-lg',
             styles.nav,
             currentTheme === 'barista' ? 'text-[#D7A86E]' : 'text-[#C9A87C]'
           )}
@@ -435,11 +434,10 @@ export function PillNav({
               exit={{ y: -30, opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
-                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border mx-auto',
+                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border mx-auto max-w-sm',
                 styles.mobileBg,
                 styles.mobileBorder
               )}
-              style={{ maxWidth: 'calc(100vw - 2rem)' }}
             >
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
                 {navItems.map((item, index) => (
