@@ -117,8 +117,7 @@ export function PillNav({
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsMounted(true), 0);
-    return () => clearTimeout(timer);
+    setIsMounted(true);
   }, []);
 
   const updatePillPosition = useCallback(() => {
@@ -281,6 +280,7 @@ export function PillNav({
   );
 
   return (
+    // MINIMAL FIX: Added max-w-full to prevent overflow
     <div className="relative w-full md:w-auto max-w-full">
       {/* Desktop Navigation */}
       <div
@@ -340,8 +340,8 @@ export function PillNav({
         <ThemeToggle />
       </div>
 
-      {/* Mobile Navigation - Fixed positioning */}
-      <div className="md:hidden flex items-center gap-3 w-full max-w-full mx-auto box-border">
+      {/* Mobile Navigation - YOUR WORKING VERSION with max-width constraint */}
+      <div className="md:hidden flex items-center gap-3 w-full max-w-[calc(100vw-2rem)]">
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -381,12 +381,12 @@ export function PillNav({
         </button>
 
         <div className={cn(
-          'flex-1 min-w-0 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium shadow-lg transition-all duration-300 flex items-center gap-2 overflow-hidden',
+          'flex-1 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium truncate shadow-lg transition-all duration-300 flex items-center gap-2',
           styles.nav,
           styles.text
         )}>
-          <span className="shrink-0">{navItems[activeIndex]?.icon}</span>
-          <span className="truncate">{navItems[activeIndex]?.label || 'Menu'}</span>
+          {navItems[activeIndex]?.icon}
+          <span>{navItems[activeIndex]?.label || 'Menu'}</span>
         </div>
 
         <button
@@ -472,10 +472,10 @@ export function PillNav({
                     )}>
                       {item.icon}
                     </div>
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-lg font-medium truncate">{item.label}</span>
+                    <div className="flex flex-col">
+                      <span className="text-lg font-medium">{item.label}</span>
                       <span className={cn(
-                        'text-xs truncate',
+                        'text-xs',
                         currentTheme === 'beautician' ? 'text-[#2C2416]/50' : 'text-white/50'
                       )}>
                         {item.description}
@@ -486,7 +486,7 @@ export function PillNav({
                       <motion.div
                         layoutId="activeIndicator"
                         className={cn(
-                          "ml-auto w-2 h-2 rounded-full shrink-0",
+                          "ml-auto w-2 h-2 rounded-full",
                           currentTheme === 'beautician' ? 'bg-[#C9A87C]' : 'bg-[#D7A86E]'
                         )}
                       />
