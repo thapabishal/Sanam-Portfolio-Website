@@ -280,8 +280,7 @@ export function PillNav({
   );
 
   return (
-    // MINIMAL FIX: Added max-w-full to prevent overflow
-    <div className="relative w-full md:w-auto max-w-full">
+    <div className="relative w-full md:w-auto">
       {/* Desktop Navigation */}
       <div
         ref={containerRef}
@@ -340,13 +339,14 @@ export function PillNav({
         <ThemeToggle />
       </div>
 
-      {/* Mobile Navigation - YOUR WORKING VERSION with max-width constraint */}
-      <div className="md:hidden flex items-center gap-3 w-full max-w-[calc(100vw-2rem)]">
+      {/* Mobile Navigation - FIXED LAYOUT using CSS Grid */}
+      <div className="md:hidden grid grid-cols-[48px_1fr_48px] gap-2 w-full max-w-[320px] mx-auto">
+        {/* Menu Button - Fixed width */}
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className={cn(
-            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shrink-0 shadow-lg',
+            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shadow-lg',
             styles.nav,
             styles.text
           )}
@@ -380,20 +380,22 @@ export function PillNav({
           </AnimatePresence>
         </button>
 
+        {/* Middle Section - Constrained width with max-width */}
         <div className={cn(
-          'flex-1 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium truncate shadow-lg transition-all duration-300 flex items-center gap-2',
+          'flex items-center justify-center gap-2 px-3 py-3 rounded-full backdrop-blur-xl border text-sm font-medium shadow-lg transition-all duration-300 overflow-hidden',
           styles.nav,
           styles.text
         )}>
-          {navItems[activeIndex]?.icon}
-          <span>{navItems[activeIndex]?.label || 'Menu'}</span>
+          <span className="shrink-0">{navItems[activeIndex]?.icon}</span>
+          <span className="truncate">{navItems[activeIndex]?.label || 'Menu'}</span>
         </div>
 
+        {/* Theme Toggle Button - Fixed width */}
         <button
           type="button"
           onClick={() => onThemeChange(currentTheme === 'barista' ? 'beautician' : 'barista')}
           className={cn(
-            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shrink-0 shadow-lg',
+            'flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-xl border transition-all duration-300 shadow-lg',
             styles.nav,
             currentTheme === 'barista' ? 'text-[#D7A86E]' : 'text-[#C9A87C]'
           )}
@@ -435,11 +437,10 @@ export function PillNav({
               exit={{ y: -30, opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
-                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border',
+                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border max-w-[calc(100vw-2rem)] mx-auto',
                 styles.mobileBg,
                 styles.mobileBorder
               )}
-              style={{ maxWidth: 'calc(100vw - 2rem)' }}
             >
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
                 {navItems.map((item, index) => (
