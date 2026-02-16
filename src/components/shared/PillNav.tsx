@@ -102,6 +102,60 @@ const navItems: NavItem[] = [
   },
 ];
 
+interface ThemeToggleProps {
+  currentTheme: Theme;
+  onThemeChange: (theme: Theme) => void;
+  styles: {
+    toggle: {
+      bg: string;
+      active: string;
+      inactive: string;
+    };
+  };
+  isMobile?: boolean;
+}
+
+const ThemeToggle = ({ currentTheme, onThemeChange, styles, isMobile = false }: ThemeToggleProps) => (
+  <div className={cn(
+    "flex items-center rounded-full p-1 gap-1 border",
+    isMobile ? "w-full" : "",
+    styles.toggle.bg,
+    currentTheme === 'beautician' ? 'border-[#C9A87C]/30' : 'border-[#D7A86E]/30'
+  )}>
+    <button
+      type="button"
+      onClick={() => onThemeChange('beautician')}
+      className={cn(
+        "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
+        currentTheme === 'beautician' ? styles.toggle.active : styles.toggle.inactive,
+        isMobile && "flex-1"
+      )}
+      aria-pressed={currentTheme === 'beautician'}
+      aria-label="Switch to Beautician mode"
+      style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
+    >
+      <Sparkles className="w-3.5 h-3.5" />
+      <span className="hidden sm:inline">Beauty</span>
+    </button>
+
+    <button
+      type="button"
+      onClick={() => onThemeChange('barista')}
+      className={cn(
+        "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
+        currentTheme === 'barista' ? styles.toggle.active : styles.toggle.inactive,
+        isMobile && "flex-1"
+      )}
+      aria-pressed={currentTheme === 'barista'}
+      aria-label="Switch to Barista mode"
+      style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
+    >
+      <Coffee className="w-3.5 h-3.5" />
+      <span className="hidden sm:inline">Coffee</span>
+    </button>
+  </div>
+);
+
 export function PillNav({
   currentTheme,
   onThemeChange,
@@ -236,48 +290,6 @@ export function PillNav({
 
   const styles = getThemeStyles();
 
-  // Theme Toggle Component
-  const ThemeToggle = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <div className={cn(
-      "flex items-center rounded-full p-1 gap-1 border",
-      isMobile ? "w-full" : "",
-      styles.toggle.bg,
-      currentTheme === 'beautician' ? 'border-[#C9A87C]/30' : 'border-[#D7A86E]/30'
-    )}>
-      <button
-        type="button"
-        onClick={() => onThemeChange('beautician')}
-        className={cn(
-          "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-          currentTheme === 'beautician' ? styles.toggle.active : styles.toggle.inactive,
-          isMobile && "flex-1"
-        )}
-        aria-pressed={currentTheme === 'beautician'}
-        aria-label="Switch to Beautician mode"
-        style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
-      >
-        <Sparkles className="w-3.5 h-3.5" />
-        <span className="hidden sm:inline">Beauty</span>
-      </button>
-
-      <button
-        type="button"
-        onClick={() => onThemeChange('barista')}
-        className={cn(
-          "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-          currentTheme === 'barista' ? styles.toggle.active : styles.toggle.inactive,
-          isMobile && "flex-1"
-        )}
-        aria-pressed={currentTheme === 'barista'}
-        aria-label="Switch to Barista mode"
-        style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
-      >
-        <Coffee className="w-3.5 h-3.5" />
-        <span className="hidden sm:inline">Coffee</span>
-      </button>
-    </div>
-  );
-
   return (
     <div className="relative w-full md:w-auto">
       {/* Desktop Navigation - Premium Pill */}
@@ -333,7 +345,11 @@ export function PillNav({
 
         <div className={cn('w-px h-5 mx-2 opacity-30', styles.text)} />
 
-        <ThemeToggle />
+        <ThemeToggle 
+          currentTheme={currentTheme} 
+          onThemeChange={onThemeChange} 
+          styles={styles} 
+        />
       </div>
 
       {/* Mobile Navigation - Stays mobile-friendly on scroll */}
@@ -495,7 +511,12 @@ export function PillNav({
                   <p className={cn('text-xs uppercase tracking-wider mb-3 font-bold opacity-60', styles.text)}>
                     View Mode
                   </p>
-                  <ThemeToggle isMobile />
+                  <ThemeToggle 
+                    currentTheme={currentTheme} 
+                    onThemeChange={onThemeChange} 
+                    styles={styles} 
+                    isMobile 
+                  />
                 </div>
               </nav>
             </motion.div>
