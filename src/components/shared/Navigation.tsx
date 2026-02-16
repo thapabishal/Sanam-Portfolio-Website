@@ -1,4 +1,4 @@
-// Navigation.tsx - Fixed for production hydration stability
+// Navigation.tsx - Fixed mobile positioning
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -17,9 +17,7 @@ export default function Navigation() {
       setIsScrolled(window.scrollY > 50);
     };
     
-    // Set initial scroll state
     onScroll();
-    
     window.addEventListener('scroll', onScroll, { passive: true });
     
     return () => {
@@ -31,22 +29,18 @@ export default function Navigation() {
     setTheme(newTheme);
   };
 
-  // CRITICAL FIX: Render identical structure during SSR and hydration
-  // The placeholder must match the actual component's container structure
   if (!isMounted || !isReady) {
     return (
       <header className="fixed top-0 left-0 right-0 z-50 py-4">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-start md:justify-center">
-            {/* Match the actual PillNav container dimensions exactly */}
-            <div className="w-full md:w-auto">
-              {/* Mobile placeholder - constrained width */}
-              <div className="md:hidden flex items-center gap-3 w-full max-w-[calc(100vw-2rem)]">
+          {/* CRITICAL FIX: Use justify-center for both mobile and desktop during loading */}
+          <div className="flex justify-center">
+            <div className="w-full md:w-auto max-w-full">
+              <div className="md:hidden flex items-center gap-3 w-full max-w-[calc(100vw-2rem)] mx-auto">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border shrink-0" />
                 <div className="flex-1 h-12 rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border" />
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border shrink-0" />
               </div>
-              {/* Desktop placeholder */}
               <div className="hidden md:block h-12 w-[700px] rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border" />
             </div>
           </div>
@@ -62,7 +56,9 @@ export default function Navigation() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-start md:justify-center">
+        {/* CRITICAL FIX: Changed from justify-start to justify-center for mobile */}
+        {/* This ensures the nav stays centered and doesn't overflow right */}
+        <div className="flex justify-center md:justify-center">
           <PillNav 
             currentTheme={theme} 
             onThemeChange={handleThemeChange} 

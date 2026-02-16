@@ -111,20 +111,16 @@ export function PillNav({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, height: 0, top: 0 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // CRITICAL: Start with false to match SSR, then hydrate to true
   const [isMounted, setIsMounted] = useState(false);
 
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Mark as mounted after hydration completes
   useEffect(() => {
-    // Small delay to ensure hydration is complete
     const timer = setTimeout(() => setIsMounted(true), 0);
     return () => clearTimeout(timer);
   }, []);
 
-  // Update sliding pill position - only on client side
   const updatePillPosition = useCallback(() => {
     if (!isMounted) return;
     
@@ -150,11 +146,9 @@ export function PillNav({
     }
   }, [updatePillPosition, isMounted]);
 
-  // IntersectionObserver for smooth section tracking
   useEffect(() => {
     if (!isMounted) return;
 
-    // Cleanup previous observer
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
@@ -287,9 +281,8 @@ export function PillNav({
   );
 
   return (
-    // CRITICAL FIX: Constrain width at root level with overflow control
-    <div className="relative w-full md:w-auto max-w-[100vw] overflow-visible md:overflow-visible">
-      {/* Desktop Navigation - CSS hidden on mobile */}
+    <div className="relative w-full md:w-auto max-w-full">
+      {/* Desktop Navigation */}
       <div
         ref={containerRef}
         className={cn(
@@ -347,9 +340,8 @@ export function PillNav({
         <ThemeToggle />
       </div>
 
-      {/* CRITICAL FIX: Mobile Navigation with strict width constraints */}
-      {/* Added max-w-[calc(100vw-2rem)] to prevent overflow */}
-      <div className="md:hidden flex items-center gap-3 w-full max-w-[calc(100vw-2rem)]">
+      {/* Mobile Navigation - Fixed positioning */}
+      <div className="md:hidden flex items-center gap-3 w-full max-w-full mx-auto box-border">
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -388,13 +380,12 @@ export function PillNav({
           </AnimatePresence>
         </button>
 
-        {/* Middle section - flex-1 but with min-width-0 to prevent overflow */}
         <div className={cn(
-          'flex-1 min-w-0 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium truncate shadow-lg transition-all duration-300 flex items-center gap-2',
+          'flex-1 min-w-0 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium shadow-lg transition-all duration-300 flex items-center gap-2 overflow-hidden',
           styles.nav,
           styles.text
         )}>
-          {navItems[activeIndex]?.icon}
+          <span className="shrink-0">{navItems[activeIndex]?.icon}</span>
           <span className="truncate">{navItems[activeIndex]?.label || 'Menu'}</span>
         </div>
 
@@ -423,7 +414,7 @@ export function PillNav({
         </button>
       </div>
 
-      {/* Mobile Menu Overlay - constrained to viewport */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -443,12 +434,12 @@ export function PillNav({
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: -30, opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              // CRITICAL FIX: Constrained positioning with max-width
               className={cn(
-                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border max-w-[calc(100vw-2rem)] mx-auto',
+                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border',
                 styles.mobileBg,
                 styles.mobileBorder
               )}
+              style={{ maxWidth: 'calc(100vw - 2rem)' }}
             >
               <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
                 {navItems.map((item, index) => (
