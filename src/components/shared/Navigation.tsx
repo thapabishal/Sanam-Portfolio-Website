@@ -1,7 +1,7 @@
-// Navigation.tsx - Refined for mobile responsiveness
+// Navigation.tsx - Fixed for production hydration stability
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { PillNav } from './PillNav';
 import { useTheme } from '@/components/providers/ThemeProvider';
 
@@ -13,24 +13,26 @@ export default function Navigation() {
   useEffect(() => {
     setIsMounted(true);
     
-    const onScroll = () => setIsScrolled(window.scrollY > 50);
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
     
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    }
+    // Set initial scroll state
+    onScroll();
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
     
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('scroll', onScroll);
-      }
+      window.removeEventListener('scroll', onScroll);
     };
   }, []);
 
-  const handleThemeChange = useCallback((newTheme: 'beautician' | 'barista') => {
+  const handleThemeChange = (newTheme: 'beautician' | 'barista') => {
     setTheme(newTheme);
-  }, [setTheme]);
+  };
 
+  // Consistent placeholder during SSR and initial hydration
+  // This ensures server and client render identical HTML
   if (!isMounted || !isReady) {
     return (
       <header className="fixed top-0 left-0 right-0 z-50 py-4 pointer-events-none">
@@ -50,7 +52,7 @@ export default function Navigation() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Mobile: Left-aligned, Desktop: Centered - stays consistent on scroll */}
+        {/* Mobile: Left-aligned, Desktop: Centered - CSS handles responsive behavior */}
         <div className="flex justify-start md:justify-center">
           <PillNav 
             currentTheme={theme} 

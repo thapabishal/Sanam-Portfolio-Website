@@ -102,60 +102,6 @@ const navItems: NavItem[] = [
   },
 ];
 
-interface ThemeToggleProps {
-  currentTheme: Theme;
-  onThemeChange: (theme: Theme) => void;
-  styles: {
-    toggle: {
-      bg: string;
-      active: string;
-      inactive: string;
-    };
-  };
-  isMobile?: boolean;
-}
-
-const ThemeToggle = ({ currentTheme, onThemeChange, styles, isMobile = false }: ThemeToggleProps) => (
-  <div className={cn(
-    "flex items-center rounded-full p-1 gap-1 border",
-    isMobile ? "w-full" : "",
-    styles.toggle.bg,
-    currentTheme === 'beautician' ? 'border-[#C9A87C]/30' : 'border-[#D7A86E]/30'
-  )}>
-    <button
-      type="button"
-      onClick={() => onThemeChange('beautician')}
-      className={cn(
-        "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-        currentTheme === 'beautician' ? styles.toggle.active : styles.toggle.inactive,
-        isMobile && "flex-1"
-      )}
-      aria-pressed={currentTheme === 'beautician'}
-      aria-label="Switch to Beautician mode"
-      style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
-    >
-      <Sparkles className="w-3.5 h-3.5" />
-      <span className="hidden sm:inline">Beauty</span>
-    </button>
-
-    <button
-      type="button"
-      onClick={() => onThemeChange('barista')}
-      className={cn(
-        "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-        currentTheme === 'barista' ? styles.toggle.active : styles.toggle.inactive,
-        isMobile && "flex-1"
-      )}
-      aria-pressed={currentTheme === 'barista'}
-      aria-label="Switch to Barista mode"
-      style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
-    >
-      <Coffee className="w-3.5 h-3.5" />
-      <span className="hidden sm:inline">Coffee</span>
-    </button>
-  </div>
-);
-
 export function PillNav({
   currentTheme,
   onThemeChange,
@@ -166,12 +112,20 @@ export function PillNav({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, height: 0, top: 0 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Update sliding pill position
+  // Mark as mounted after hydration
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Update sliding pill position - only on client side
   const updatePillPosition = useCallback(() => {
+    if (!isMounted) return;
+    
     const targetIndex = hoveredIndex !== null ? hoveredIndex : activeIndex;
     const button = buttonsRef.current[targetIndex];
     const container = containerRef.current;
@@ -184,43 +138,46 @@ export function PillNav({
 
       setPillStyle({ left, width: buttonRect.width, height: buttonRect.height, top });
     }
-  }, [activeIndex, hoveredIndex]);
+  }, [activeIndex, hoveredIndex, isMounted]);
 
   useEffect(() => {
-    updatePillPosition();
-    window.addEventListener('resize', updatePillPosition);
-    return () => window.removeEventListener('resize', updatePillPosition);
-  }, [updatePillPosition]);
+    if (isMounted) {
+      updatePillPosition();
+      window.addEventListener('resize', updatePillPosition);
+      return () => window.removeEventListener('resize', updatePillPosition);
+    }
+  }, [updatePillPosition, isMounted]);
 
-  // Animate pill with Framer Motion instead of GSAP for smoother mobile performance
+  // IntersectionObserver for smooth section tracking
   useEffect(() => {
-    // Pill position is handled by CSS transition in the render
-  }, [pillStyle]);
+    if (!isMounted) return;
 
-  // IntersectionObserver for smooth section tracking (replaces ScrollTrigger for better mobile performance)
-  useEffect(() => {
     // Cleanup previous observer
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
 
-    // Delay to ensure DOM sections are rendered
+    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       const options = {
         root: null,
-        rootMargin: '-20% 0px -60% 0px', // Trigger when section is in middle 40% of viewport
-        threshold: 0, // Trigger as soon as any part enters the margin
+        rootMargin: '-10% 0px -70% 0px', // Trigger when section top is in upper portion
+        threshold: 0, // Trigger as soon as any part enters
       };
 
       observerRef.current = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = navItems.findIndex(item => item.id === entry.target.id);
-            if (index !== -1) {
-              setActiveIndex(index);
-            }
+        // Find the entry with highest intersection ratio
+        const visibleEntries = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        
+        if (visibleEntries.length > 0) {
+          const targetId = visibleEntries[0].target.id;
+          const index = navItems.findIndex(item => item.id === targetId);
+          if (index !== -1) {
+            setActiveIndex(index);
           }
-        });
+        }
       }, options);
 
       // Observe all sections
@@ -230,7 +187,7 @@ export function PillNav({
           observerRef.current.observe(section);
         }
       });
-    }, 200);
+    }, 100);
 
     return () => {
       clearTimeout(timer);
@@ -238,7 +195,7 @@ export function PillNav({
         observerRef.current.disconnect();
       }
     };
-  }, []);
+  }, [isMounted]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -290,9 +247,51 @@ export function PillNav({
 
   const styles = getThemeStyles();
 
+  // Theme Toggle Component - SINGLE DEFINITION
+  const ThemeToggle = ({ isMobile = false }: { isMobile?: boolean }) => (
+    <div className={cn(
+      "flex items-center rounded-full p-1 gap-1 border",
+      isMobile ? "w-full" : "",
+      styles.toggle.bg,
+      currentTheme === 'beautician' ? 'border-[#C9A87C]/30' : 'border-[#D7A86E]/30'
+    )}>
+      <button
+        type="button"
+        onClick={() => onThemeChange('beautician')}
+        className={cn(
+          "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
+          currentTheme === 'beautician' ? styles.toggle.active : styles.toggle.inactive,
+          isMobile && "flex-1"
+        )}
+        aria-pressed={currentTheme === 'beautician'}
+        aria-label="Switch to Beautician mode"
+        style={{ touchAction: 'manipulation' }}
+      >
+        <Sparkles className="w-3.5 h-3.5" />
+        <span className="hidden sm:inline">Beauty</span>
+      </button>
+
+      <button
+        type="button"
+        onClick={() => onThemeChange('barista')}
+        className={cn(
+          "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
+          currentTheme === 'barista' ? styles.toggle.active : styles.toggle.inactive,
+          isMobile && "flex-1"
+        )}
+        aria-pressed={currentTheme === 'barista'}
+        aria-label="Switch to Barista mode"
+        style={{ touchAction: 'manipulation' }}
+      >
+        <Coffee className="w-3.5 h-3.5" />
+        <span className="hidden sm:inline">Coffee</span>
+      </button>
+    </div>
+  );
+
   return (
     <div className="relative w-full md:w-auto">
-      {/* Desktop Navigation - Premium Pill */}
+      {/* Desktop Navigation - Premium Pill - CSS hidden on mobile */}
       <div
         ref={containerRef}
         className={cn(
@@ -301,15 +300,18 @@ export function PillNav({
           isScrolled ? 'shadow-2xl scale-[0.98]' : 'scale-100'
         )}
       >
-        <div
-          className={cn('pill-indicator absolute rounded-full pointer-events-none z-0 transition-all duration-400 ease-out', styles.pill)}
-          style={{ 
-            left: pillStyle.left, 
-            top: pillStyle.top, 
-            width: pillStyle.width, 
-            height: pillStyle.height 
-          }}
-        />
+        {/* Sliding pill indicator - only show when mounted */}
+        {isMounted && (
+          <div
+            className={cn('pill-indicator absolute rounded-full pointer-events-none z-0 transition-all duration-400 ease-out', styles.pill)}
+            style={{ 
+              left: pillStyle.left, 
+              top: pillStyle.top, 
+              width: pillStyle.width, 
+              height: pillStyle.height 
+            }}
+          />
+        )}
 
         <nav className="flex items-center gap-0.5 relative z-10" aria-label="Main navigation">
           {navItems.map((item, index) => (
@@ -345,14 +347,11 @@ export function PillNav({
 
         <div className={cn('w-px h-5 mx-2 opacity-30', styles.text)} />
 
-        <ThemeToggle 
-          currentTheme={currentTheme} 
-          onThemeChange={onThemeChange} 
-          styles={styles} 
-        />
+        {/* Single ThemeToggle instance */}
+        <ThemeToggle />
       </div>
 
-      {/* Mobile Navigation - Stays mobile-friendly on scroll */}
+      {/* Mobile Navigation - CSS visible only on mobile, stays consistent on scroll */}
       <div className="md:hidden flex items-center gap-3 w-full">
         <button
           type="button"
@@ -511,12 +510,8 @@ export function PillNav({
                   <p className={cn('text-xs uppercase tracking-wider mb-3 font-bold opacity-60', styles.text)}>
                     View Mode
                   </p>
-                  <ThemeToggle 
-                    currentTheme={currentTheme} 
-                    onThemeChange={onThemeChange} 
-                    styles={styles} 
-                    isMobile 
-                  />
+                  {/* Single ThemeToggle for mobile */}
+                  <ThemeToggle isMobile />
                 </div>
               </nav>
             </motion.div>
