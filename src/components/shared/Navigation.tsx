@@ -1,3 +1,4 @@
+// Navigation.tsx - Refined for mobile responsiveness
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -34,7 +35,7 @@ export default function Navigation() {
     return (
       <header className="fixed top-0 left-0 right-0 z-50 py-4 pointer-events-none">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center">
+          <div className="flex justify-start md:justify-center">
             <div className="h-12 w-full md:w-[700px] rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm" />
           </div>
         </div>
@@ -49,6 +50,7 @@ export default function Navigation() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Mobile: Left-aligned, Desktop: Centered - stays consistent on scroll */}
         <div className="flex justify-start md:justify-center">
           <PillNav 
             currentTheme={theme} 

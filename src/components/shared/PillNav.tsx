@@ -1,8 +1,6 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home,
@@ -18,8 +16,6 @@ import {
   Coffee
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-gsap.registerPlugin(ScrollTrigger);
 
 type Theme = 'beautician' | 'barista';
 
@@ -118,7 +114,7 @@ export function PillNav({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
-  const triggersRef = useRef<ScrollTrigger[]>([]);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Update sliding pill position
   const updatePillPosition = useCallback(() => {
@@ -142,49 +138,51 @@ export function PillNav({
     return () => window.removeEventListener('resize', updatePillPosition);
   }, [updatePillPosition]);
 
-  // Animate pill with GSAP
+  // Animate pill with Framer Motion instead of GSAP for smoother mobile performance
   useEffect(() => {
-    if (containerRef.current) {
-      const pill = containerRef.current.querySelector('.pill-indicator') as HTMLElement;
-      if (pill) {
-        gsap.to(pill, {
-          left: pillStyle.left,
-          width: pillStyle.width,
-          height: pillStyle.height,
-          top: pillStyle.top,
-          duration: 0.4,
-          ease: 'power3.out'
-        });
-      }
-    }
+    // Pill position is handled by CSS transition in the render
   }, [pillStyle]);
 
-  // ScrollTrigger for active section detection
+  // IntersectionObserver for smooth section tracking (replaces ScrollTrigger for better mobile performance)
   useEffect(() => {
-    // Clear previous triggers
-    triggersRef.current.forEach(t => t.kill());
-    triggersRef.current = [];
+    // Cleanup previous observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
 
     // Delay to ensure DOM sections are rendered
     const timer = setTimeout(() => {
-      navItems.forEach((item, index) => {
+      const options = {
+        root: null,
+        rootMargin: '-20% 0px -60% 0px', // Trigger when section is in middle 40% of viewport
+        threshold: 0, // Trigger as soon as any part enters the margin
+      };
+
+      observerRef.current = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = navItems.findIndex(item => item.id === entry.target.id);
+            if (index !== -1) {
+              setActiveIndex(index);
+            }
+          }
+        });
+      }, options);
+
+      // Observe all sections
+      navItems.forEach((item) => {
         const section = document.getElementById(item.id);
-        if (section) {
-          const trigger = ScrollTrigger.create({
-            trigger: section,
-            start: 'top 60%',
-            end: 'bottom 40%',
-            onEnter: () => setActiveIndex(index),
-            onEnterBack: () => setActiveIndex(index),
-          });
-          triggersRef.current.push(trigger);
+        if (section && observerRef.current) {
+          observerRef.current.observe(section);
         }
       });
     }, 200);
 
     return () => {
       clearTimeout(timer);
-      triggersRef.current.forEach(t => t.kill());
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
     };
   }, []);
 
@@ -256,6 +254,7 @@ export function PillNav({
         )}
         aria-pressed={currentTheme === 'beautician'}
         aria-label="Switch to Beautician mode"
+        style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
       >
         <Sparkles className="w-3.5 h-3.5" />
         <span className="hidden sm:inline">Beauty</span>
@@ -271,6 +270,7 @@ export function PillNav({
         )}
         aria-pressed={currentTheme === 'barista'}
         aria-label="Switch to Barista mode"
+        style={{ touchAction: 'manipulation' }} // Prevents double-tap zoom on mobile
       >
         <Coffee className="w-3.5 h-3.5" />
         <span className="hidden sm:inline">Coffee</span>
@@ -290,8 +290,13 @@ export function PillNav({
         )}
       >
         <div
-          className={cn('pill-indicator absolute rounded-full pointer-events-none z-0', styles.pill)}
-          style={{ left: 0, top: 0, width: 0, height: 0 }}
+          className={cn('pill-indicator absolute rounded-full pointer-events-none z-0 transition-all duration-400 ease-out', styles.pill)}
+          style={{ 
+            left: pillStyle.left, 
+            top: pillStyle.top, 
+            width: pillStyle.width, 
+            height: pillStyle.height 
+          }}
         />
 
         <nav className="flex items-center gap-0.5 relative z-10" aria-label="Main navigation">
@@ -309,6 +314,7 @@ export function PillNav({
               )}
               aria-current={activeIndex === index ? 'page' : undefined}
               title={item.description}
+              style={{ touchAction: 'manipulation' }}
             >
               <span className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                 {item.icon}
@@ -330,7 +336,7 @@ export function PillNav({
         <ThemeToggle />
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - Stays mobile-friendly on scroll */}
       <div className="md:hidden flex items-center gap-3 w-full">
         <button
           type="button"
@@ -343,6 +349,7 @@ export function PillNav({
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-menu"
           aria-label="Toggle navigation menu"
+          style={{ touchAction: 'manipulation' }}
         >
           <AnimatePresence mode="wait">
             {isMobileMenuOpen ? (
@@ -387,6 +394,7 @@ export function PillNav({
             currentTheme === 'barista' ? 'text-[#D7A86E]' : 'text-[#C9A87C]'
           )}
           aria-label={`Switch to ${currentTheme === 'barista' ? 'Beautician' : 'Barista'} mode`}
+          style={{ touchAction: 'manipulation' }}
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -447,6 +455,7 @@ export function PillNav({
                           ? 'text-[#2C2416]/70 hover:bg-[#C9A87C]/10 hover:text-[#2C2416]'
                           : 'text-[#F5F5F5]/70 hover:bg-[#D7A86E]/10 hover:text-[#F5F5F5]')
                     )}
+                    style={{ touchAction: 'manipulation' }}
                   >
                     <div className={cn(
                       'p-2 rounded-full transition-all duration-300',
