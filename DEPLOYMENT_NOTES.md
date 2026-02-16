@@ -28,3 +28,6 @@ If deployment fails or critical regressions occur:
 - **Build**: `npm run build` should pass without ERESOLVE errors.
 - **Runtime**: Verify that the application loads and navigating between pages works.
 - **SEO**: Check `view-source` to see if meta tags are present. (Note: They may be missing due to `next/head` usage in App Router).
+
+## Deployment status
+- Triggering new deployment to ensure React 19 is picked up.
