@@ -6,8 +6,8 @@ import { schemaTypes } from './schemaTypes'
 export default defineConfig({
   name: 'default',
   title: 'Kamala Portfolio',
-  projectId: 'wixsdjnc', // Use your actual project ID
-  dataset: 'production',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   plugins: [structureTool(), visionTool()],
   schema: { types: schemaTypes },
 })
