@@ -34,7 +34,6 @@ interface NavItem {
   description: string;
 }
 
-// Storytelling-aligned navigation with CORRECT section IDs
 const navItems: NavItem[] = [
   {
     id: 'hero',
@@ -112,14 +111,17 @@ export function PillNav({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, height: 0, top: 0 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // CRITICAL: Start with false to match SSR, then hydrate to true
   const [isMounted, setIsMounted] = useState(false);
 
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Mark as mounted after hydration
+  // Mark as mounted after hydration completes
   useEffect(() => {
-    setIsMounted(true);
+    // Small delay to ensure hydration is complete
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Update sliding pill position - only on client side
@@ -157,16 +159,14 @@ export function PillNav({
       observerRef.current.disconnect();
     }
 
-    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       const options = {
         root: null,
-        rootMargin: '-10% 0px -70% 0px', // Trigger when section top is in upper portion
-        threshold: 0, // Trigger as soon as any part enters
+        rootMargin: '-10% 0px -70% 0px',
+        threshold: 0,
       };
 
       observerRef.current = new IntersectionObserver((entries) => {
-        // Find the entry with highest intersection ratio
         const visibleEntries = entries
           .filter(entry => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
@@ -180,7 +180,6 @@ export function PillNav({
         }
       }, options);
 
-      // Observe all sections
       navItems.forEach((item) => {
         const section = document.getElementById(item.id);
         if (section && observerRef.current) {
@@ -207,7 +206,6 @@ export function PillNav({
     }
   };
 
-  // Theme-aware styles
   const getThemeStyles = () => {
     switch (currentTheme) {
       case 'beautician':
@@ -247,7 +245,6 @@ export function PillNav({
 
   const styles = getThemeStyles();
 
-  // Theme Toggle Component - SINGLE DEFINITION
   const ThemeToggle = ({ isMobile = false }: { isMobile?: boolean }) => (
     <div className={cn(
       "flex items-center rounded-full p-1 gap-1 border",
@@ -290,8 +287,9 @@ export function PillNav({
   );
 
   return (
-    <div className="relative w-full md:w-auto">
-      {/* Desktop Navigation - Premium Pill - CSS hidden on mobile */}
+    // CRITICAL FIX: Constrain width at root level with overflow control
+    <div className="relative w-full md:w-auto max-w-[100vw] overflow-visible md:overflow-visible">
+      {/* Desktop Navigation - CSS hidden on mobile */}
       <div
         ref={containerRef}
         className={cn(
@@ -300,7 +298,6 @@ export function PillNav({
           isScrolled ? 'shadow-2xl scale-[0.98]' : 'scale-100'
         )}
       >
-        {/* Sliding pill indicator - only show when mounted */}
         {isMounted && (
           <div
             className={cn('pill-indicator absolute rounded-full pointer-events-none z-0 transition-all duration-400 ease-out', styles.pill)}
@@ -347,12 +344,12 @@ export function PillNav({
 
         <div className={cn('w-px h-5 mx-2 opacity-30', styles.text)} />
 
-        {/* Single ThemeToggle instance */}
         <ThemeToggle />
       </div>
 
-      {/* Mobile Navigation - CSS visible only on mobile, stays consistent on scroll */}
-      <div className="md:hidden flex items-center gap-3 w-full">
+      {/* CRITICAL FIX: Mobile Navigation with strict width constraints */}
+      {/* Added max-w-[calc(100vw-2rem)] to prevent overflow */}
+      <div className="md:hidden flex items-center gap-3 w-full max-w-[calc(100vw-2rem)]">
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -391,13 +388,14 @@ export function PillNav({
           </AnimatePresence>
         </button>
 
+        {/* Middle section - flex-1 but with min-width-0 to prevent overflow */}
         <div className={cn(
-          'flex-1 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium truncate shadow-lg transition-all duration-300 flex items-center gap-2',
+          'flex-1 min-w-0 px-4 py-3 rounded-full backdrop-blur-xl border text-sm font-medium truncate shadow-lg transition-all duration-300 flex items-center gap-2',
           styles.nav,
           styles.text
         )}>
           {navItems[activeIndex]?.icon}
-          <span>{navItems[activeIndex]?.label || 'Menu'}</span>
+          <span className="truncate">{navItems[activeIndex]?.label || 'Menu'}</span>
         </div>
 
         <button
@@ -425,7 +423,7 @@ export function PillNav({
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - constrained to viewport */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -445,8 +443,9 @@ export function PillNav({
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: -30, opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              // CRITICAL FIX: Constrained positioning with max-width
               className={cn(
-                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border',
+                'md:hidden fixed left-4 right-4 top-20 rounded-3xl p-6 z-50 shadow-2xl border max-w-[calc(100vw-2rem)] mx-auto',
                 styles.mobileBg,
                 styles.mobileBorder
               )}
@@ -473,7 +472,7 @@ export function PillNav({
                     style={{ touchAction: 'manipulation' }}
                   >
                     <div className={cn(
-                      'p-2 rounded-full transition-all duration-300',
+                      'p-2 rounded-full transition-all duration-300 shrink-0',
                       activeIndex === index
                         ? (currentTheme === 'beautician'
                           ? 'bg-[#C9A87C] text-white'
@@ -482,10 +481,10 @@ export function PillNav({
                     )}>
                       {item.icon}
                     </div>
-                    <div className="flex flex-col">
-                      <span className="text-lg font-medium">{item.label}</span>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-lg font-medium truncate">{item.label}</span>
                       <span className={cn(
-                        'text-xs',
+                        'text-xs truncate',
                         currentTheme === 'beautician' ? 'text-[#2C2416]/50' : 'text-white/50'
                       )}>
                         {item.description}
@@ -496,7 +495,7 @@ export function PillNav({
                       <motion.div
                         layoutId="activeIndicator"
                         className={cn(
-                          "ml-auto w-2 h-2 rounded-full",
+                          "ml-auto w-2 h-2 rounded-full shrink-0",
                           currentTheme === 'beautician' ? 'bg-[#C9A87C]' : 'bg-[#D7A86E]'
                         )}
                       />
@@ -510,7 +509,6 @@ export function PillNav({
                   <p className={cn('text-xs uppercase tracking-wider mb-3 font-bold opacity-60', styles.text)}>
                     View Mode
                   </p>
-                  {/* Single ThemeToggle for mobile */}
                   <ThemeToggle isMobile />
                 </div>
               </nav>

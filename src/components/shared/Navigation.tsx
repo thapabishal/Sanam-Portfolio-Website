@@ -31,14 +31,24 @@ export default function Navigation() {
     setTheme(newTheme);
   };
 
-  // Consistent placeholder during SSR and initial hydration
-  // This ensures server and client render identical HTML
+  // CRITICAL FIX: Render identical structure during SSR and hydration
+  // The placeholder must match the actual component's container structure
   if (!isMounted || !isReady) {
     return (
-      <header className="fixed top-0 left-0 right-0 z-50 py-4 pointer-events-none">
+      <header className="fixed top-0 left-0 right-0 z-50 py-4">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-start md:justify-center">
-            <div className="h-12 w-full md:w-[700px] rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm" />
+            {/* Match the actual PillNav container dimensions exactly */}
+            <div className="w-full md:w-auto">
+              {/* Mobile placeholder - constrained width */}
+              <div className="md:hidden flex items-center gap-3 w-full max-w-[calc(100vw-2rem)]">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border shrink-0" />
+                <div className="flex-1 h-12 rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border shrink-0" />
+              </div>
+              {/* Desktop placeholder */}
+              <div className="hidden md:block h-12 w-[700px] rounded-full bg-[var(--bg-elevated)]/50 backdrop-blur-sm border" />
+            </div>
           </div>
         </div>
       </header>
@@ -52,7 +62,6 @@ export default function Navigation() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Mobile: Left-aligned, Desktop: Centered - CSS handles responsive behavior */}
         <div className="flex justify-start md:justify-center">
           <PillNav 
             currentTheme={theme} 
