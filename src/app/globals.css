@@ -1,0 +1,716 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   1. SEMANTIC THEME VARIABLES
+   ========================================================================== */
+@layer base {
+  :root {
+    /* ============================================
+       DEFAULT THEME (Dark/Espresso - Barista Mode)
+       Warm, premium dark tones - no stark blacks
+       ============================================ */
+    
+    /* Core Semantic Variables (as requested) */
+    --background-color: #0F0C0A;
+    --text-color: #F5F0EB;
+    --heading-color: #F5F0EB;
+    --primary-color: #D4A574;
+    --accent-color: #C9A87C;
+    
+    /* Extended Palette */
+    --bg-page: #0F0C0A;
+    --bg-card: #1A1512;
+    --bg-elevated: #241E1A;
+    --bg-overlay: rgba(15, 12, 10, 0.85);
+    
+    /* Text Scale */
+    --text-primary: #F5F0EB;
+    --text-secondary: rgba(245, 240, 235, 0.75);
+    --text-muted: rgba(245, 240, 235, 0.45);
+    --text-inverse: #2C2416;
+    
+    /* Accent Scale */
+    --accent-primary: #D4A574;
+    --accent-secondary: #C9A87C;
+    --accent-tertiary: #B8956A;
+    --accent-glow: rgba(212, 165, 116, 0.3);
+    
+    /* Borders */
+    --border-default: rgba(212, 165, 116, 0.15);
+    --border-hover: rgba(212, 165, 116, 0.35);
+    --border-subtle: rgba(245, 240, 235, 0.08);
+    
+    /* Navigation */
+    --nav-bg: rgba(26, 21, 18, 0.95);
+    --nav-border: rgba(212, 165, 116, 0.1);
+    
+    /* Shadows - Refined for luxury feel */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 30px rgba(212, 165, 116, 0.15);
+    
+    /* Legacy mappings for backward compatibility */
+    --color-bg-primary: var(--bg-page);
+    --color-bg-secondary: var(--bg-card);
+    --color-bg-tertiary: var(--bg-elevated);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-muted: var(--text-muted);
+    --color-border: var(--border-default);
+    --color-border-hover: var(--border-hover);
+    --color-beautician-primary: var(--accent-secondary);
+    --color-beautician-dark: #A88B5C;
+    --color-beautician-light: #E8D5C4;
+    --color-barista-primary: #3E2723;
+    --color-barista-accent: var(--accent-primary);
+    --color-barista-light: #F5F5F5;
+    
+    /* Social colors */
+    --color-social-facebook: #1877F2;
+    --color-social-instagram: var(--accent-secondary);
+    --color-social-tiktok: #FE2C55;
+    --color-social-whatsapp: #25D366;
+    --color-social-icon: var(--text-primary);
+    --color-social-bg: rgba(245, 240, 235, 0.08);
+    
+    /* Typography */
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-accent: 'Cormorant Garamond', serif;
+    
+    /* Transitions */
+    --theme-transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --theme-transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ============================================
+     LIGHT THEME (Beautician Mode)
+     Soft warm cream tones - no stark whites
+     ============================================ */
+  [data-theme="beautician"] {
+    /* Core Semantic Variables */
+    --background-color: #FAF7F4;
+    --text-color: #2C2416;
+    --heading-color: #2C2416;
+    --primary-color: #C9A87C;
+    --accent-color: #D4A574;
+    
+    /* Extended Palette */
+    --bg-page: #FAF7F4;
+    --bg-card: #F5F0EB;
+    --bg-elevated: #EDE5DE;
+    --bg-overlay: rgba(250, 247, 244, 0.9);
+    
+    /* Text Scale - High contrast for readability */
+    --text-primary: #2C2416;
+    --text-secondary: rgba(44, 36, 22, 0.7);
+    --text-muted: rgba(44, 36, 22, 0.45);
+    --text-inverse: #F5F0EB;
+    
+    /* Accent Scale - Slightly softer in light mode */
+    --accent-primary: #C9A87C;
+    --accent-secondary: #D4A574;
+    --accent-tertiary: #B8956A;
+    --accent-glow: rgba(201, 168, 124, 0.25);
+    
+    /* Borders - Warmer tones */
+    --border-default: rgba(201, 168, 124, 0.25);
+    --border-hover: rgba(44, 36, 22, 0.15);
+    --border-subtle: rgba(44, 36, 22, 0.06);
+    
+    /* Navigation */
+    --nav-bg: rgba(250, 247, 244, 0.95);
+    --nav-border: rgba(201, 168, 124, 0.15);
+    
+    /* Shadows - Softer, warmer shadows for light mode */
+    --shadow-sm: 0 2px 8px rgba(44, 36, 22, 0.06);
+    --shadow-md: 0 8px 24px rgba(44, 36, 22, 0.08);
+    --shadow-lg: 0 20px 48px rgba(44, 36, 22, 0.1);
+    --shadow-glow: 0 0 30px rgba(201, 168, 124, 0.12);
+    
+    /* Legacy mappings */
+    --color-bg-primary: var(--bg-page);
+    --color-bg-secondary: var(--bg-card);
+    --color-bg-tertiary: var(--bg-elevated);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-muted: var(--text-muted);
+    --color-border: var(--border-default);
+    --color-border-hover: var(--border-hover);
+    --color-beautician-primary: var(--accent-secondary);
+    --color-beautician-dark: #A88B5C;
+    --color-beautician-light: #E8D5C4;
+    --color-barista-primary: #3E2723;
+    --color-barista-accent: var(--accent-primary);
+    --color-barista-light: #F5F5F5;
+    
+    /* Social light theme */
+    --color-social-icon: #2C2416;
+    --color-social-bg: rgba(201, 168, 124, 0.08);
+  }
+
+  /* ============================================
+     DARK THEME (Barista Mode)
+     Explicit dark theme - warm espresso tones
+     ============================================ */
+  [data-theme="barista"] {
+    /* Core Semantic Variables */
+    --background-color: #0F0C0A;
+    --text-color: #F5F0EB;
+    --heading-color: #F5F0EB;
+    --primary-color: #D4A574;
+    --accent-color: #C9A87C;
+    
+    /* Extended Palette */
+    --bg-page: #0F0C0A;
+    --bg-card: #1A1512;
+    --bg-elevated: #241E1A;
+    --bg-overlay: rgba(15, 12, 10, 0.85);
+    
+    /* Text Scale */
+    --text-primary: #F5F0EB;
+    --text-secondary: rgba(245, 240, 235, 0.75);
+    --text-muted: rgba(245, 240, 235, 0.45);
+    --text-inverse: #2C2416;
+    
+    /* Accent Scale */
+    --accent-primary: #D4A574;
+    --accent-secondary: #C9A87C;
+    --accent-tertiary: #B8956A;
+    --accent-glow: rgba(212, 165, 116, 0.3);
+    
+    /* Borders */
+    --border-default: rgba(212, 165, 116, 0.15);
+    --border-hover: rgba(212, 165, 116, 0.35);
+    --border-subtle: rgba(245, 240, 235, 0.08);
+    
+    /* Navigation */
+    --nav-bg: rgba(26, 21, 18, 0.95);
+    --nav-border: rgba(212, 165, 116, 0.1);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 30px rgba(212, 165, 116, 0.15);
+    
+    /* Legacy mappings */
+    --color-bg-primary: var(--bg-page);
+    --color-bg-secondary: var(--bg-card);
+    --color-bg-tertiary: var(--bg-elevated);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-muted: var(--text-muted);
+    --color-border: var(--border-default);
+    --color-border-hover: var(--border-hover);
+    --color-beautician-primary: var(--accent-secondary);
+    --color-beautician-dark: #A88B5C;
+    --color-beautician-light: #E8D5C4;
+    --color-barista-primary: #3E2723;
+    --color-barista-accent: var(--accent-primary);
+    --color-barista-light: #F5F5F5;
+    
+    /* Social dark theme */
+    --color-social-icon: #F5F0EB;
+    --color-social-bg: rgba(245, 240, 235, 0.08);
+  }
+}
+
+/* ==========================================================================
+   2. SEMANTIC UTILITY CLASSES
+   ========================================================================== */
+@layer utilities {
+  /* Core Semantic Utilities (as requested) */
+  .bg-theme { background-color: var(--background-color) !important; }
+  .text-theme { color: var(--text-color) !important; }
+  .heading-theme { color: var(--heading-color) !important; }
+  .primary-theme { color: var(--primary-color) !important; }
+  .accent-theme { color: var(--accent-color) !important; }
+  .bg-primary-theme { background-color: var(--primary-color) !important; }
+  .bg-accent-theme { background-color: var(--accent-color) !important; }
+  
+  /* Extended Backgrounds */
+  .bg-page { background-color: var(--bg-page) !important; }
+  .bg-card { background-color: var(--bg-card) !important; }
+  .bg-elevated { background-color: var(--bg-elevated) !important; }
+  .bg-overlay { background-color: var(--bg-overlay) !important; }
+  .bg-nav { background-color: var(--nav-bg) !important; }
+  .bg-accent { background-color: var(--accent-primary) !important; }
+  .bg-accent-secondary { background-color: var(--accent-secondary) !important; }
+  
+  /* Extended Text */
+  .text-primary { color: var(--text-primary) !important; }
+  .text-secondary { color: var(--text-secondary) !important; }
+  .text-muted { color: var(--text-muted) !important; }
+  .text-inverse { color: var(--text-inverse) !important; }
+  .text-accent { color: var(--accent-primary) !important; }
+  .text-accent-alt { color: var(--accent-secondary) !important; }
+  .text-accent-dark { color: #A88B5C !important; }
+  
+  /* Extended Borders */
+  .border-theme { border-color: var(--border-default) !important; }
+  .border-theme-hover { border-color: var(--border-hover) !important; }
+  .border-subtle { border-color: var(--border-subtle) !important; }
+  .border-accent { border-color: var(--accent-primary) !important; }
+  
+  /* Shadows */
+  .shadow-theme-sm { box-shadow: var(--shadow-sm) !important; }
+  .shadow-theme-md { box-shadow: var(--shadow-md) !important; }
+  .shadow-theme-lg { box-shadow: var(--shadow-lg) !important; }
+  .shadow-glow { box-shadow: var(--shadow-glow) !important; }
+  
+  /* Legacy support */
+  .bg-theme-page { background-color: var(--color-bg-primary) !important; }
+  .bg-theme-card { background-color: var(--color-bg-secondary) !important; }
+  .bg-theme-elevated { background-color: var(--color-bg-tertiary) !important; }
+  .text-theme-primary { color: var(--color-text-primary) !important; }
+  .text-theme-secondary { color: var(--color-text-secondary) !important; }
+  .text-theme-muted { color: var(--color-text-muted) !important; }
+  .text-theme-accent { color: var(--color-beautician-primary) !important; }
+  .border-theme-default { border-color: var(--color-border) !important; }
+  
+  /* Transitions */
+  .theme-transition {
+    transition: background-color var(--theme-transition), 
+                color var(--theme-transition), 
+                border-color var(--theme-transition), 
+                fill var(--theme-transition), 
+                stroke var(--theme-transition),
+                box-shadow var(--theme-transition),
+                opacity var(--theme-transition);
+  }
+  
+  .theme-transition-slow {
+    transition: background-color var(--theme-transition-slow), 
+                color var(--theme-transition-slow), 
+                border-color var(--theme-transition-slow), 
+                fill var(--theme-transition-slow), 
+                stroke var(--theme-transition-slow),
+                box-shadow var(--theme-transition-slow);
+  }
+  
+  .theme-transition-none {
+    transition: none !important;
+  }
+}
+
+/* ==========================================================================
+   3. BASE STYLES
+   ========================================================================== */
+@layer base {
+  * {
+    @apply border-[var(--color-border)];
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    transition: background-color var(--theme-transition), color var(--theme-transition);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    color: var(--heading-color);
+    transition: color var(--theme-transition);
+  }
+
+  p, span, div {
+    transition: color var(--theme-transition), background-color var(--theme-transition), border-color var(--theme-transition);
+  }
+
+  ::selection {
+    background-color: var(--accent-primary);
+    color: var(--bg-page);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-card);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ==========================================================================
+   4. ANIMATION KEYFRAMES
+   ========================================================================== */
+@layer utilities {
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+    50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-glow); }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes reveal-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-reveal-up {
+    animation: reveal-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  /* Luxury name reveal animation */
+  @keyframes luxury-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(40px) rotateX(-20deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0);
+    }
+  }
+  
+  .animate-luxury-reveal {
+    animation: luxury-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+/* ==========================================================================
+   5. COMPONENT UTILITIES
+   ========================================================================== */
+@layer components {
+  .section-container {
+    @apply max-w-7xl mx-auto px-6 md:px-8;
+  }
+
+  /* Glass Card Effect - Enhanced for both themes */
+  .glass-card {
+    background: rgba(245, 240, 235, 0.03);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-default);
+    border-radius: 1rem;
+    transition: background var(--theme-transition), border-color var(--theme-transition), box-shadow var(--theme-transition);
+  }
+
+  [data-theme="beautician"] .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(201, 168, 124, 0.25);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .glass-card-hover:hover {
+    border-color: var(--border-hover);
+    background: rgba(245, 240, 235, 0.06);
+    box-shadow: var(--shadow-md);
+  }
+
+  [data-theme="beautician"] .glass-card-hover:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(201, 168, 124, 0.4);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Primary Button - Uses semantic variables */
+  .btn-primary {
+    @apply px-8 py-4 font-bold uppercase tracking-[0.2em] text-xs rounded-full transition-all duration-300;
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-color);
+    color: var(--text-inverse);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    @apply px-8 py-4 font-bold uppercase tracking-[0.2em] text-xs rounded-full transition-all duration-300 border;
+    border-color: var(--border-default);
+    color: var(--text-muted);
+    background-color: transparent;
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(212, 165, 116, 0.1);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  [data-theme="beautician"] .btn-secondary:hover {
+    background-color: rgba(201, 168, 124, 0.15);
+  }
+
+  /* Navigation Container */
+  .nav-container {
+    background-color: var(--nav-bg);
+    border: 1px solid var(--nav-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background-color var(--theme-transition), border-color var(--theme-transition);
+  }
+
+  /* Social Media Dock Items */
+  .social-dock-item {
+    @apply transition-all duration-300 border rounded-full;
+    background-color: var(--bg-card);
+    border-color: var(--border-default);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .social-dock-item:hover {
+    transform: translateY(-4px);
+    background-color: rgba(212, 165, 116, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-md);
+  }
+
+  [data-theme="beautician"] .social-dock-item {
+    background-color: rgba(201, 168, 124, 0.08);
+    border-color: rgba(201, 168, 124, 0.2);
+  }
+
+  [data-theme="beautician"] .social-dock-item:hover {
+    background-color: rgba(201, 168, 124, 0.15);
+    border-color: var(--accent-primary);
+  }
+
+  /* Section Title - Uses semantic heading color */
+  .section-title {
+    @apply font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1];
+    color: var(--heading-color);
+  }
+
+  /* Text Gradient - Adaptive to theme */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r;
+    background-image: linear-gradient(to right, var(--accent-secondary), var(--accent-primary));
+  }
+
+  /* Divider Line */
+  .divider {
+    @apply w-px h-20 bg-gradient-to-b from-transparent to-transparent;
+    background-image: linear-gradient(to bottom, transparent, var(--accent-primary), transparent);
+  }
+
+  /* Panel/Hero Card - Enhanced readability */
+  .hero-panel {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-default);
+    transition: all var(--theme-transition);
+  }
+
+  .hero-panel:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-lg);
+  }
+
+  [data-theme="beautician"] .hero-panel {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(201, 168, 124, 0.2);
+  }
+}
+
+/* ==========================================================================
+   6. UTILITY CLASSES
+   ========================================================================== */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gpu {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .aspect-portrait {
+    aspect-ratio: 3/4;
+  }
+  
+  .aspect-landscape {
+    aspect-ratio: 16/9;
+  }
+
+  .no-tap {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Refined Text Shadows - Subtle and clean */
+  .text-shadow-subtle {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-soft {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Legacy - kept for compatibility but not recommended */
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  .text-hero-shadow {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  /* Light theme text shadows - minimal, clean */
+  [data-theme="beautician"] .text-shadow-subtle {
+    text-shadow: 0 1px 2px rgba(44, 36, 22, 0.05);
+  }
+  
+  [data-theme="beautician"] .text-shadow-soft {
+    text-shadow: 0 2px 4px rgba(44, 36, 22, 0.08);
+  }
+  
+  [data-theme="beautician"] .text-hero-shadow {
+    text-shadow: 0 2px 8px rgba(44, 36, 22, 0.1);
+  }
+
+  /* Gradient overlays for text readability on images */
+  .text-overlay-gradient {
+    background: linear-gradient(to top, var(--bg-page) 0%, transparent 100%);
+  }
+  
+  [data-theme="beautician"] .text-overlay-gradient {
+    background: linear-gradient(to top, var(--bg-page) 0%, transparent 100%);
+  }
+  
+  /* Luxury glow effect for accent text */
+  .text-glow-accent {
+    text-shadow: 0 0 20px var(--accent-glow);
+  }
+}
+
+/* ==========================================================================
+   7. HERO SPECIFIC STYLES
+   ========================================================================== */
+@layer components {
+  .hero-bg-transition {
+    transition: filter 0.8s ease, transform 0.8s ease, opacity 0.7s ease;
+  }
+
+  .curtain-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+  
+  /* Panel text glow for luxury feel */
+  .panel-text-glow {
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ==========================================================================
+   8. ACCESSIBILITY
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .parallax,
+  .gpu {
+    transform: none !important;
+    will-change: auto !important;
+  }
+}
+
+/* ==========================================================================
+   9. PRINT STYLES
+   ========================================================================== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}

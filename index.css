@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
+  --font-cormorant: 'Cormorant Garamond', serif;
+  
+  /* Default Dark Theme */
+  --bg-primary: #050505;
+  --bg-secondary: #0a0a0a;
+  --text-primary: #F5F5F5;
+  --text-secondary: rgba(245, 245, 245, 0.7);
+  --accent-primary: #C9A87C;
+  --accent-secondary: #D7A86E;
+  --border-color: rgba(255, 255, 255, 0.1);
+  
+  --color-beautician-primary: #C9A87C;
+  --color-barista-primary: #3E2723;
+  --color-barista-accent: #D7A86E;
+}
+
+/* Beautician Mode - Gold/Cream Bridal Aesthetic */
+[data-theme="beautician"] {
+  --bg-primary: #FAF7F4;
+  --bg-secondary: #F5F0EB;
+  --text-primary: #2C2416;
+  --text-secondary: rgba(44, 36, 22, 0.7);
+  --accent-primary: #C9A87C;
+  --accent-secondary: #A67C52;
+  --border-color: rgba(201, 168, 124, 0.3);
+}
+
+/* Barista Mode - Espresso/Coffee Aesthetic */
+[data-theme="barista"] {
+  --bg-primary: #1A1512;
+  --bg-secondary: #2C1810;
+  --text-primary: #F5F5F5;
+  --text-secondary: rgba(245, 245, 245, 0.8);
+  --accent-primary: #D7A86E;
+  --accent-secondary: #3E2723;
+  --border-color: rgba(215, 168, 110, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+body {
+  font-family: var(--font-inter);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.7s ease, color 0.7s ease;
+}
+
+/* Scrollbar theming */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 10px;
+}
+
+::selection {
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
