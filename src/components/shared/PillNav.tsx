@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home,
@@ -101,6 +101,69 @@ const navItems: NavItem[] = [
   },
 ];
 
+// This function is moved outside the component to prevent re-declaration on every render.
+function getThemeStyles(currentTheme: Theme) {
+  switch (currentTheme) {
+    case 'beautician':
+      return {
+        nav: 'bg-[#FAF7F4]/98 border-[#C9A87C]/30 shadow-lg',
+        text: 'text-[#2C2416]',
+        muted: 'text-[#2C2416]/60',
+        pill: 'bg-[#C9A87C]/25',
+        activeText: 'text-[#2C2416]',
+        underline: 'bg-[#C9A87C]',
+        mobileBg: 'bg-[#FAF7F4]',
+        mobileBorder: 'border-[#C9A87C]/20',
+        toggle: {
+          bg: 'bg-[#EDE5DE]',
+          active: 'bg-[#C9A87C] text-white shadow-md',
+          inactive: 'text-[#2C2416]/60 hover:text-[#2C2416] hover:bg-[#C9A87C]/10'
+        }
+      };
+    case 'barista':
+      return {
+        nav: 'bg-[#1A1512]/98 border-[#D7A86E]/30 shadow-lg',
+        text: 'text-[#F5F5F5]',
+        muted: 'text-[#F5F5F5]/60',
+        pill: 'bg-[#D7A86E]/20',
+        activeText: 'text-white',
+        underline: 'bg-[#D7A86E]',
+        mobileBg: 'bg-[#1A1512]',
+        mobileBorder: 'border-[#D7A86E]/20',
+        toggle: {
+          bg: 'bg-[#2C2416]',
+          active: 'bg-[#D7A86E] text-[#1A1512] shadow-md',
+          inactive: 'text-[#D7A86E]/60 hover:text-[#D7A86E] hover:bg-[#D7A86E]/10'
+        }
+      };
+  }
+}
+
+// ThemeToggle component moved outside PillNav to prevent re-creation on every render.
+// This resolves the 'react/no-unstable-nested-components' linting issue.
+const ThemeToggle = ({
+  currentTheme,
+  onThemeChange,
+  styles,
+  isMobile = false
+}: {
+  currentTheme: Theme;
+  onThemeChange: (theme: Theme) => void;
+  styles: ReturnType<typeof getThemeStyles>;
+  isMobile?: boolean;
+}) => (
+  <div className={cn("flex items-center rounded-full p-1 gap-1 border", isMobile ? "w-full" : "", styles.toggle.bg, currentTheme === 'beautician' ? 'border-[#C9A87C]/30' : 'border-[#D7A86E]/30')}>
+    <button type="button" onClick={() => onThemeChange('beautician')} className={cn("flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300", currentTheme === 'beautician' ? styles.toggle.active : styles.toggle.inactive, isMobile && "flex-1")} aria-pressed={currentTheme === 'beautician'} aria-label="Switch to Beautician mode" style={{ touchAction: 'manipulation' }}>
+      <Sparkles className="w-3.5 h-3.5" />
+      <span className="hidden sm:inline">Beauty</span>
+    </button>
+    <button type="button" onClick={() => onThemeChange('barista')} className={cn("flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300", currentTheme === 'barista' ? styles.toggle.active : styles.toggle.inactive, isMobile && "flex-1")} aria-pressed={currentTheme === 'barista'} aria-label="Switch to Barista mode" style={{ touchAction: 'manipulation' }}>
+      <Coffee className="w-3.5 h-3.5" />
+      <span className="hidden sm:inline">Coffee</span>
+    </button>
+  </div>
+);
+
 export function PillNav({
   currentTheme,
   onThemeChange,
@@ -118,7 +181,7 @@ export function PillNav({
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+  }, [setIsMounted]);
 
   const updatePillPosition = useCallback(() => {
     if (!isMounted) return;
@@ -187,7 +250,7 @@ export function PillNav({
         observerRef.current.disconnect();
       }
     };
-  }, [isMounted]);
+  }, [isMounted, setActiveIndex]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -199,85 +262,7 @@ export function PillNav({
     }
   };
 
-  const getThemeStyles = () => {
-    switch (currentTheme) {
-      case 'beautician':
-        return {
-          nav: 'bg-[#FAF7F4]/98 border-[#C9A87C]/30 shadow-lg',
-          text: 'text-[#2C2416]',
-          muted: 'text-[#2C2416]/60',
-          pill: 'bg-[#C9A87C]/25',
-          activeText: 'text-[#2C2416]',
-          underline: 'bg-[#C9A87C]',
-          mobileBg: 'bg-[#FAF7F4]',
-          mobileBorder: 'border-[#C9A87C]/20',
-          toggle: {
-            bg: 'bg-[#EDE5DE]',
-            active: 'bg-[#C9A87C] text-white shadow-md',
-            inactive: 'text-[#2C2416]/60 hover:text-[#2C2416] hover:bg-[#C9A87C]/10'
-          }
-        };
-      case 'barista':
-        return {
-          nav: 'bg-[#1A1512]/98 border-[#D7A86E]/30 shadow-lg',
-          text: 'text-[#F5F5F5]',
-          muted: 'text-[#F5F5F5]/60',
-          pill: 'bg-[#D7A86E]/20',
-          activeText: 'text-white',
-          underline: 'bg-[#D7A86E]',
-          mobileBg: 'bg-[#1A1512]',
-          mobileBorder: 'border-[#D7A86E]/20',
-          toggle: {
-            bg: 'bg-[#2C2416]',
-            active: 'bg-[#D7A86E] text-[#1A1512] shadow-md',
-            inactive: 'text-[#D7A86E]/60 hover:text-[#D7A86E] hover:bg-[#D7A86E]/10'
-          }
-        };
-    }
-  };
-
-  const styles = getThemeStyles();
-
-  const ThemeToggle = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <div className={cn(
-      "flex items-center rounded-full p-1 gap-1 border",
-      isMobile ? "w-full" : "",
-      styles.toggle.bg,
-      currentTheme === 'beautician' ? 'border-[#C9A87C]/30' : 'border-[#D7A86E]/30'
-    )}>
-      <button
-        type="button"
-        onClick={() => onThemeChange('beautician')}
-        className={cn(
-          "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-          currentTheme === 'beautician' ? styles.toggle.active : styles.toggle.inactive,
-          isMobile && "flex-1"
-        )}
-        aria-pressed={currentTheme === 'beautician'}
-        aria-label="Switch to Beautician mode"
-        style={{ touchAction: 'manipulation' }}
-      >
-        <Sparkles className="w-3.5 h-3.5" />
-        <span className="hidden sm:inline">Beauty</span>
-      </button>
-
-      <button
-        type="button"
-        onClick={() => onThemeChange('barista')}
-        className={cn(
-          "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300",
-          currentTheme === 'barista' ? styles.toggle.active : styles.toggle.inactive,
-          isMobile && "flex-1"
-        )}
-        aria-pressed={currentTheme === 'barista'}
-        aria-label="Switch to Barista mode"
-        style={{ touchAction: 'manipulation' }}
-      >
-        <Coffee className="w-3.5 h-3.5" />
-        <span className="hidden sm:inline">Coffee</span>
-      </button>
-    </div>
-  );
+  const styles = useMemo(() => getThemeStyles(currentTheme), [currentTheme]);
 
   return (
     <div className="relative inline-block">
@@ -336,7 +321,11 @@ export function PillNav({
 
         <div className={cn('w-px h-5 mx-2 opacity-30', styles.text)} />
 
-        <ThemeToggle />
+        <ThemeToggle
+          currentTheme={currentTheme}
+          onThemeChange={onThemeChange}
+          styles={styles}
+        />
       </div>
 
       {/* Mobile Navigation - Simple flex, no complex layouts */}
@@ -498,7 +487,12 @@ export function PillNav({
                   <p className={cn('text-xs uppercase tracking-wider mb-3 font-bold opacity-60', styles.text)}>
                     View Mode
                   </p>
-                  <ThemeToggle isMobile />
+                  <ThemeToggle
+                    currentTheme={currentTheme}
+                    onThemeChange={onThemeChange}
+                    styles={styles}
+                    isMobile
+                  />
                 </div>
               </nav>
             </motion.div>
