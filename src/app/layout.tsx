@@ -29,6 +29,14 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   title: 'Kamala Saru | Makeup Artist & Barista Trainer',
   description: 'Professional Makeup Artist and Barista Trainer in Butwal, Nepal. Specialized in bridal makeup, skincare, and professional coffee brewing courses.',
+  keywords: ['makeup artist', 'barista trainer', 'bridal makeup', 'Nepal', 'Butwal', 'coffee training'],
+  authors: [{ name: 'Kamala Saru' }],
+  openGraph: {
+    title: 'Kamala Saru | Makeup Artist & Barista Trainer',
+    description: 'Professional Makeup Artist and Barista Trainer in Butwal, Nepal',
+    type: 'website',
+    locale: 'en_US',
+  },
 };
 
 export default function RootLayout({
@@ -44,7 +52,6 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-[var(--bg-page)] text-[var(--text-primary)] font-body antialiased">
         <ThemeProvider>
-          {/* CRITICAL: Navigation OUTSIDE SmoothScrollProvider */}
           <Navigation />
           <SmoothScrollProvider>
             <main className="relative">
