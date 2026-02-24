@@ -216,11 +216,11 @@ export function Contact() {
             <motion.div variants={fadeInUp}>
               <p className="text-[var(--text-muted)] text-xs uppercase tracking-[0.2em] mb-5 font-medium">Connect</p>
               <div className="flex gap-4">
-                <SocialIcon href="https://instagram.com/kamala.personal" icon={<Instagram className="w-5 h-5" />} label="Personal" />
-                <SocialIcon href="https://instagram.com/kamala.makeup" icon={<Instagram className="w-5 h-5" />} label="Work" />
-                <SocialIcon href="https://facebook.com/kamalaartistry" icon={<Facebook className="w-5 h-5" />} label="Facebook" />
-                <SocialIcon href="https://tiktok.com/@kamala.create" icon={<TikTokIcon className="w-5 h-5" />} label="TikTok" />
-                <SocialIcon href={`https://wa.me/${contactInfo.phone.replace(/[^0-9]/g, '')}`} icon={<MessageCircle className="w-5 h-5" />} label="WhatsApp" />
+                <SocialIcon href="https://www.instagram.com/sanam_saru/?hl=en" icon={<Instagram className="w-5 h-5" />} label="Personal" />
+                <SocialIcon href="https://www.instagram.com/sis_tersbeautycorner/?hl=en" icon={<Instagram className="w-5 h-5" />} label="Work" />
+                <SocialIcon href="https://www.facebook.com/makeupwith.sanam" icon={<Facebook className="w-5 h-5" />} label="Facebook" />
+                <SocialIcon href="https://www.tiktok.com/@san_aam" icon={<TikTokIcon className="w-5 h-5" />} label="TikTok" />
+                <SocialIcon href="https://wa.me/qr/N5RYHGQDGDKWI1" icon={<MessageCircle className="w-5 h-5" />} label="WhatsApp" />
               </div>
             </motion.div>
           </motion.div>
