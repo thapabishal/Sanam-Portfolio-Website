@@ -58,11 +58,11 @@ export default function Footer() {
   };
 
   const socials = [
-    { icon: Instagram, href: 'https://instagram.com/kamala.saru', label: 'Personal', handle: '@kamala.saru' },
-    { icon: Instagram, href: 'https://instagram.com/sisterbeautycorner', label: 'Work', handle: '@sisterbeautycorner' },
-    { icon: Facebook, href: 'https://facebook.com/kamala.saru', label: 'Facebook', handle: 'Kamala Saru' },
-    { icon: Music2, href: 'https://tiktok.com/@kamalasaru', label: 'TikTok', handle: '@kamalasaru' },
-    { icon: MessageCircle, href: 'https://wa.me/9779821407395', label: 'WhatsApp', handle: '+977 9821407395' },
+    { icon: Instagram, href: 'https://www.instagram.com/sanam_saru/?hl=en', label: 'Personal', handle: '@kamala.saru' },
+    { icon: Instagram, href: 'https://www.instagram.com/sis_tersbeautycorner/?hl=en', label: 'Work', handle: '@sisterbeautycorner' },
+    { icon: Facebook, href: 'https://www.facebook.com/makeupwith.sanam', label: 'Facebook', handle: 'Kamala Saru' },
+    { icon: Music2, href: 'https://www.tiktok.com/@san_aam', label: 'TikTok', handle: '@kamalasaru' },
+    { icon: MessageCircle, href: 'https://wa.me/qr/N5RYHGQDGDKWI1', label: 'WhatsApp', handle: '+977 9821407395' },
   ];
 
   // Animation variants for staggered reveals
